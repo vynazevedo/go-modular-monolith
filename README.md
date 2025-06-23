@@ -142,7 +142,7 @@ go test ./internal/modules/user/...
 - **Database**: MySQL 8.0 with health checks
 - **Compose**: Orchestrates app and database with proper dependencies for development
 
-## 📋 Development Guidelines
+## Development Guidelines
 
 ### Code Organization
 - Follow Clean Architecture principles
@@ -160,7 +160,7 @@ go test ./internal/modules/user/...
 - Implement proper error handling middleware
 - Follow RESTful conventions
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Framework**: Fiber v2 (Express-like Go web framework)
 - **ORM**: GORM (Go Object-Relational Mapping)
