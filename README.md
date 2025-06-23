@@ -1,1 +1,1 @@
-# go-template-ddd-module.
+# go-modular-monolith
