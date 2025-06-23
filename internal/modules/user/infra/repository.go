@@ -1,4 +1,3 @@
-// Package infra provides the GORM implementation of the user repository.
 package infra
 
 import (

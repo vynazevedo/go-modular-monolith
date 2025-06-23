@@ -1,4 +1,8 @@
+# Ignore build and output directories
 output/
 src/main.exe
 .idea/
 .env
+
+# Ignore build artifacts
+bin/

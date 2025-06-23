@@ -1,10 +1,10 @@
-// Package http provides HTTP handlers for the user module
 package http
 
 import (
+	"net/http"
 	"strconv"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gin-gonic/gin"
 	"github.com/vynazevedo/go-modular-monolith/internal/modules/user/app"
 )
 
@@ -16,10 +16,11 @@ func NewUserHandlers(service *app.UserService) *UserHandlers {
 	return &UserHandlers{service: service}
 }
 
-func (h *UserHandlers) CreateUser(c *fiber.Ctx) error {
+func (h *UserHandlers) CreateUser(c *gin.Context) {
 	var req CreateUserRequest
-	if err := c.BodyParser(&req); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(ErrorResponse{Error: "Invalid request body"})
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "Invalid request body"})
+		return
 	}
 
 	cmd := app.CreateUserCommand{
@@ -27,12 +28,13 @@ func (h *UserHandlers) CreateUser(c *fiber.Ctx) error {
 		Name:  req.Name,
 	}
 
-	user, err := h.service.CreateUser(c.Context(), cmd)
+	user, err := h.service.CreateUser(c.Request.Context(), cmd)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: err.Error()})
+		return
 	}
 
-	return c.Status(fiber.StatusCreated).JSON(UserResponse{
+	c.JSON(http.StatusCreated, UserResponse{
 		ID:     user.ID,
 		Email:  user.Email,
 		Name:   user.Name,
@@ -40,19 +42,21 @@ func (h *UserHandlers) CreateUser(c *fiber.Ctx) error {
 	})
 }
 
-func (h *UserHandlers) GetUser(c *fiber.Ctx) error {
-	id := c.Params("id")
+func (h *UserHandlers) GetUser(c *gin.Context) {
+	id := c.Param("id")
 	if id == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(ErrorResponse{Error: "User ID is required"})
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "User ID is required"})
+		return
 	}
 
 	query := app.GetUserQuery{ID: id}
-	user, err := h.service.GetUser(c.Context(), query)
+	user, err := h.service.GetUser(c.Request.Context(), query)
 	if err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(ErrorResponse{Error: "User not found"})
+		c.JSON(http.StatusNotFound, ErrorResponse{Error: "User not found"})
+		return
 	}
 
-	return c.JSON(UserResponse{
+	c.JSON(http.StatusOK, UserResponse{
 		ID:     user.ID,
 		Email:  user.Email,
 		Name:   user.Name,
@@ -60,15 +64,17 @@ func (h *UserHandlers) GetUser(c *fiber.Ctx) error {
 	})
 }
 
-func (h *UserHandlers) UpdateUser(c *fiber.Ctx) error {
-	id := c.Params("id")
+func (h *UserHandlers) UpdateUser(c *gin.Context) {
+	id := c.Param("id")
 	if id == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(ErrorResponse{Error: "User ID is required"})
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "User ID is required"})
+		return
 	}
 
 	var req UpdateUserRequest
-	if err := c.BodyParser(&req); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(ErrorResponse{Error: "Invalid request body"})
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "Invalid request body"})
+		return
 	}
 
 	cmd := app.UpdateUserCommand{
@@ -76,12 +82,13 @@ func (h *UserHandlers) UpdateUser(c *fiber.Ctx) error {
 		Name: req.Name,
 	}
 
-	user, err := h.service.UpdateUser(c.Context(), cmd)
+	user, err := h.service.UpdateUser(c.Request.Context(), cmd)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: err.Error()})
+		return
 	}
 
-	return c.JSON(UserResponse{
+	c.JSON(http.StatusOK, UserResponse{
 		ID:     user.ID,
 		Email:  user.Email,
 		Name:   user.Name,
@@ -89,33 +96,37 @@ func (h *UserHandlers) UpdateUser(c *fiber.Ctx) error {
 	})
 }
 
-func (h *UserHandlers) DeleteUser(c *fiber.Ctx) error {
-	id := c.Params("id")
+func (h *UserHandlers) DeleteUser(c *gin.Context) {
+	id := c.Param("id")
 	if id == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(ErrorResponse{Error: "User ID is required"})
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "User ID is required"})
+		return
 	}
 
 	cmd := app.DeleteUserCommand{ID: id}
-	if err := h.service.DeleteUser(c.Context(), cmd); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(ErrorResponse{Error: err.Error()})
+	if err := h.service.DeleteUser(c.Request.Context(), cmd); err != nil {
+		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
+		return
 	}
 
-	return c.SendStatus(fiber.StatusNoContent)
+	c.Status(http.StatusNoContent)
 }
 
-func (h *UserHandlers) ActivateUser(c *fiber.Ctx) error {
-	id := c.Params("id")
+func (h *UserHandlers) ActivateUser(c *gin.Context) {
+	id := c.Param("id")
 	if id == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(ErrorResponse{Error: "User ID is required"})
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "User ID is required"})
+		return
 	}
 
 	cmd := app.ActivateUserCommand{ID: id}
-	user, err := h.service.ActivateUser(c.Context(), cmd)
+	user, err := h.service.ActivateUser(c.Request.Context(), cmd)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
+		return
 	}
 
-	return c.JSON(UserResponse{
+	c.JSON(http.StatusOK, UserResponse{
 		ID:     user.ID,
 		Email:  user.Email,
 		Name:   user.Name,
@@ -123,19 +134,21 @@ func (h *UserHandlers) ActivateUser(c *fiber.Ctx) error {
 	})
 }
 
-func (h *UserHandlers) DeactivateUser(c *fiber.Ctx) error {
-	id := c.Params("id")
+func (h *UserHandlers) DeactivateUser(c *gin.Context) {
+	id := c.Param("id")
 	if id == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(ErrorResponse{Error: "User ID is required"})
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "User ID is required"})
+		return
 	}
 
 	cmd := app.DeactivateUserCommand{ID: id}
-	user, err := h.service.DeactivateUser(c.Context(), cmd)
+	user, err := h.service.DeactivateUser(c.Request.Context(), cmd)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
+		return
 	}
 
-	return c.JSON(UserResponse{
+	c.JSON(http.StatusOK, UserResponse{
 		ID:     user.ID,
 		Email:  user.Email,
 		Name:   user.Name,
@@ -143,13 +156,15 @@ func (h *UserHandlers) DeactivateUser(c *fiber.Ctx) error {
 	})
 }
 
-func (h *UserHandlers) ListUsers(c *fiber.Ctx) error {
-	page, err := strconv.Atoi(c.Query("page", "1"))
+func (h *UserHandlers) ListUsers(c *gin.Context) {
+	pageStr := c.DefaultQuery("page", "1")
+	page, err := strconv.Atoi(pageStr)
 	if err != nil || page < 1 {
 		page = 1
 	}
 
-	limit, err := strconv.Atoi(c.Query("limit", "10"))
+	limitStr := c.DefaultQuery("limit", "10")
+	limit, err := strconv.Atoi(limitStr)
 	if err != nil || limit < 1 || limit > 100 {
 		limit = 10
 	}
@@ -159,9 +174,10 @@ func (h *UserHandlers) ListUsers(c *fiber.Ctx) error {
 		Limit: limit,
 	}
 
-	users, err := h.service.ListUsers(c.Context(), query)
+	users, err := h.service.ListUsers(c.Request.Context(), query)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
+		return
 	}
 
 	userResponses := make([]UserResponse, len(users))
@@ -174,7 +190,7 @@ func (h *UserHandlers) ListUsers(c *fiber.Ctx) error {
 		}
 	}
 
-	return c.JSON(UsersResponse{
+	c.JSON(http.StatusOK, UsersResponse{
 		Users: userResponses,
 		Page:  page,
 		Limit: limit,

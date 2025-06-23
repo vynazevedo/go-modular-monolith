@@ -2,16 +2,16 @@
 package module
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
 type Module interface {
-	RegisterRoutes(router fiber.Router)
+	RegisterRoutes(router *gin.RouterGroup)
 	GetModels() []any
 }
 
-func RegisterModules(router fiber.Router, modules ...Module) {
+func RegisterModules(router *gin.RouterGroup, modules ...Module) {
 	for _, module := range modules {
 		module.RegisterRoutes(router)
 	}

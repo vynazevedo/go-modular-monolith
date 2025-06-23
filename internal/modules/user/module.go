@@ -1,7 +1,7 @@
 package user
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"github.com/gin-gonic/gin"
 	"github.com/vynazevedo/go-modular-monolith/internal/modules/user/app"
 	"github.com/vynazevedo/go-modular-monolith/internal/modules/user/domain"
 	"github.com/vynazevedo/go-modular-monolith/internal/modules/user/http"
@@ -27,7 +27,7 @@ func NewModule(db *gorm.DB) *Module {
 	}
 }
 
-func (m *Module) RegisterRoutes(router fiber.Router) {
+func (m *Module) RegisterRoutes(router *gin.RouterGroup) {
 	m.handlers.RegisterRoutes(router.Group("/users"))
 }
 

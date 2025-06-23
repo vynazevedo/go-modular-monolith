@@ -1,8 +1,9 @@
-// Package http provides shared HTTP handlers for the applications
 package http
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Handler struct{}
@@ -11,9 +12,9 @@ func NewHandler() *Handler {
 	return &Handler{}
 }
 
-func (h *Handler) RegisterRoutes(router fiber.Router) {
-	router.Get("/health-check/alive", func(c *fiber.Ctx) error {
-		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+func (h *Handler) RegisterRoutes(router gin.IRouter) {
+	router.GET("/health-check/alive", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
 			"status": "UP",
 		})
 	})

@@ -1,4 +1,3 @@
-// Package config provides configuration management for the applications
 package config
 
 import (
@@ -7,19 +6,26 @@ import (
 	"log"
 
 	"github.com/spf13/viper"
+	"github.com/vynazevedo/go-modular-monolith/pkg/logger"
 )
 
 type Config struct {
 	Server   ServerConfig
 	Database DatabaseConfig
+	Logger   logger.Config
 }
 
 type ServerConfig struct {
 	Port string
+	Mode string
 }
 
 type DatabaseConfig struct {
-	URL string
+	Host     string
+	Port     string
+	User     string
+	Password string
+	Name     string
 }
 
 func LoadConfig() (*Config, error) {
@@ -28,7 +34,14 @@ func LoadConfig() (*Config, error) {
 	viper.AutomaticEnv()
 
 	viper.SetDefault("PORT", "8080")
-	viper.SetDefault("DATABASE_URL", "root:password@tcp(localhost:3306)/modular_monolith?charset=utf8mb4&parseTime=True&loc=Local")
+	viper.SetDefault("GIN_MODE", "debug")
+	viper.SetDefault("DB_HOST", "localhost")
+	viper.SetDefault("DB_PORT", "3306")
+	viper.SetDefault("DB_USER", "root")
+	viper.SetDefault("DB_PASSWORD", "password")
+	viper.SetDefault("DB_NAME", "modular_monolith")
+	viper.SetDefault("LOG_LEVEL", "info")
+	viper.SetDefault("LOG_FORMAT", "text")
 
 	if err := viper.ReadInConfig(); err != nil {
 		var configFileNotFoundError viper.ConfigFileNotFoundError
@@ -41,9 +54,18 @@ func LoadConfig() (*Config, error) {
 	config := &Config{
 		Server: ServerConfig{
 			Port: viper.GetString("PORT"),
+			Mode: viper.GetString("GIN_MODE"),
 		},
 		Database: DatabaseConfig{
-			URL: viper.GetString("DATABASE_URL"),
+			Host:     viper.GetString("DB_HOST"),
+			Port:     viper.GetString("DB_PORT"),
+			User:     viper.GetString("DB_USER"),
+			Password: viper.GetString("DB_PASSWORD"),
+			Name:     viper.GetString("DB_NAME"),
+		},
+		Logger: logger.Config{
+			Level:  viper.GetString("LOG_LEVEL"),
+			Format: viper.GetString("LOG_FORMAT"),
 		},
 	}
 

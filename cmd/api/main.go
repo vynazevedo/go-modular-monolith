@@ -1,30 +1,35 @@
 package main
 
 import (
-	"errors"
-	"log"
+	"net/http"
 
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/gin-gonic/gin"
 	"github.com/vynazevedo/go-modular-monolith/internal/modules/user"
 	"github.com/vynazevedo/go-modular-monolith/internal/shared/config"
 	"github.com/vynazevedo/go-modular-monolith/internal/shared/database"
-	"github.com/vynazevedo/go-modular-monolith/internal/shared/http"
+	httpHandler "github.com/vynazevedo/go-modular-monolith/internal/shared/http"
 	"github.com/vynazevedo/go-modular-monolith/internal/shared/module"
+	"github.com/vynazevedo/go-modular-monolith/pkg/logger"
 	"gorm.io/gorm"
 )
 
 func main() {
 	cfg, err := config.LoadConfig()
 	if err != nil {
-		log.Fatalf("Failed to load configuration: %v", err)
+		logger.Fatalf("Failed to load configuration: %v", err)
 	}
+
+	logger.Init(cfg.Logger)
+	logger.Info("Logger initialized successfully")
+
+	gin.SetMode(cfg.Server.Mode)
+	logger.Infof("Gin mode set to: %s", cfg.Server.Mode)
 
 	db, err := database.Connect(cfg)
 	if err != nil {
-		log.Fatalf("Failed to connect to database: %v", err)
+		logger.Fatalf("Failed to connect to database: %v", err)
 	}
+	logger.Info("Database connected successfully")
 
 	userModuleSetup := func(db *gorm.DB) module.Module {
 		return user.NewModule(db)
@@ -32,34 +37,24 @@ func main() {
 	modules := module.SetupAllModules(db, userModuleSetup)
 
 	if err := database.AutoMigrate(db, module.GetAllModels(modules...)...); err != nil {
-		log.Fatalf("Failed to auto migrate models: %v", err)
+		logger.Fatalf("Failed to auto migrate models: %v", err)
 	}
+	logger.Info("Database migration completed successfully")
 
-	app := fiber.New(fiber.Config{
-		ErrorHandler: func(c *fiber.Ctx, err error) error {
-			code := fiber.StatusInternalServerError
-			var e *fiber.Error
-			if errors.As(err, &e) {
-				code = e.Code
-			}
-			return c.Status(code).JSON(fiber.Map{
-				"error": err.Error(),
-			})
-		},
-	})
+	router := gin.Default()
 
-	app.Use(recover.New())
-	app.Use(logger.New())
+	router.Use(gin.Recovery())
+	router.Use(gin.Logger())
 
-	healthHandler := http.NewHandler()
-	healthHandler.RegisterRoutes(app)
+	healthHandler := httpHandler.NewHandler()
+	healthHandler.RegisterRoutes(router)
 
-	api := app.Group("/api/v1")
+	api := router.Group("/api/v1")
 
 	module.RegisterModules(api, modules...)
 
 	port := cfg.Server.Port
 
-	log.Printf("Server starting on port %s", port)
-	log.Fatal(app.Listen(":" + port))
+	logger.Infof("Server starting on port %s", port)
+	logger.Fatal(http.ListenAndServe(":"+port, router))
 }

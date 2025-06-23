@@ -1,14 +1,21 @@
-// Package database provides functions to connect to the database and perform migrations
 package database
 
 import (
+	"fmt"
+
 	"github.com/vynazevedo/go-modular-monolith/internal/shared/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 func Connect(cfg *config.Config) (*gorm.DB, error) {
-	dsn := cfg.Database.URL
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		cfg.Database.User,
+		cfg.Database.Password,
+		cfg.Database.Host,
+		cfg.Database.Port,
+		cfg.Database.Name,
+	)
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
