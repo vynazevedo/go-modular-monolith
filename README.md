@@ -45,6 +45,8 @@ Cada módulo é completamente isolado e só se comunica através de interfaces b
 ```bash
 # Clone o template
 git clone https://github.com/vynazevedo/go-modular-monolith.git go-template-ddd-module
+
+# Entre no diretório
 cd go-template-ddd-module
 
 # Instale dependências  
