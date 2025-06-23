@@ -1,3 +1,4 @@
 output/
 src/main.exe
 .idea/
+.env
