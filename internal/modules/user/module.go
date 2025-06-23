@@ -2,11 +2,11 @@ package user
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/vynazevedo/template-go-modular/internal/modules/user/app"
-	"github.com/vynazevedo/template-go-modular/internal/modules/user/domain"
-	"github.com/vynazevedo/template-go-modular/internal/modules/user/http"
-	"github.com/vynazevedo/template-go-modular/internal/modules/user/infra"
-	"github.com/vynazevedo/template-go-modular/internal/shared/module"
+	"github.com/vynazevedo/go-modular-monolith/internal/modules/user/app"
+	"github.com/vynazevedo/go-modular-monolith/internal/modules/user/domain"
+	"github.com/vynazevedo/go-modular-monolith/internal/modules/user/http"
+	"github.com/vynazevedo/go-modular-monolith/internal/modules/user/infra"
+	"github.com/vynazevedo/go-modular-monolith/internal/shared/module"
 	"gorm.io/gorm"
 )
 

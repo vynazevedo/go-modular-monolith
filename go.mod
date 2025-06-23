@@ -1,4 +1,4 @@
-module github.com/vynazevedo/template-go-modular
+module github.com/vynazevedo/go-modular-monolith
 
 go 1.24.0
 

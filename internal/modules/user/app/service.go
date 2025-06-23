@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/vynazevedo/template-go-modular/internal/modules/user/domain"
+	"github.com/vynazevedo/go-modular-monolith/internal/modules/user/domain"
 )
 
 type UserService struct {

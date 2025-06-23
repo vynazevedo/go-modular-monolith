@@ -4,7 +4,7 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/vynazevedo/template-go-modular/internal/modules/user/app"
+	"github.com/vynazevedo/go-modular-monolith/internal/modules/user/app"
 )
 
 type UserHandlers struct {

@@ -7,11 +7,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	"github.com/vynazevedo/template-go-modular/internal/modules/user"
-	"github.com/vynazevedo/template-go-modular/internal/shared/config"
-	"github.com/vynazevedo/template-go-modular/internal/shared/database"
-	"github.com/vynazevedo/template-go-modular/internal/shared/http"
-	"github.com/vynazevedo/template-go-modular/internal/shared/module"
+	"github.com/vynazevedo/go-modular-monolith/internal/modules/user"
+	"github.com/vynazevedo/go-modular-monolith/internal/shared/config"
+	"github.com/vynazevedo/go-modular-monolith/internal/shared/database"
+	"github.com/vynazevedo/go-modular-monolith/internal/shared/http"
+	"github.com/vynazevedo/go-modular-monolith/internal/shared/module"
 	"gorm.io/gorm"
 )
 

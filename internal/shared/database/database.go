@@ -1,7 +1,7 @@
 package database
 
 import (
-	"github.com/vynazevedo/template-go-modular/internal/shared/config"
+	"github.com/vynazevedo/go-modular-monolith/internal/shared/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )

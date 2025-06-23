@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/vynazevedo/template-go-modular/internal/modules/user/domain"
+	"github.com/vynazevedo/go-modular-monolith/internal/modules/user/domain"
 	"gorm.io/gorm"
 )
 
