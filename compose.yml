@@ -1,0 +1,41 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/golang.Dockerfile
+    container_name: go-modular-app
+    ports:
+      - "${PORT:-8080}:8080"
+    depends_on:
+      - db
+    environment:
+      - PORT=${PORT:-8080}
+      - DATABASE_URL=root:${MYSQL_ROOT_PASSWORD:-password}@tcp(db:3306)/${MYSQL_DATABASE:-modular_monolith}?charset=utf8mb4&parseTime=True&loc=Local
+    restart: unless-stopped
+    networks:
+      - go-modular-network
+
+  db:
+    image: mysql:8.0
+    container_name: go-modular-db
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-password}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-modular_monolith}
+      - MYSQL_USER=${MYSQL_USER:-user}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-password}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+    networks:
+      - go-modular-network
+    command: --default-authentication-plugin=mysql_native_password
+
+networks:
+  go-modular-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local

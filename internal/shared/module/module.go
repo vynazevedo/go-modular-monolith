@@ -1,0 +1,35 @@
+package module
+
+import (
+	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
+)
+
+type Module interface {
+	RegisterRoutes(router fiber.Router)
+	GetModels() []interface{}
+}
+
+func RegisterModules(router fiber.Router, modules ...Module) {
+	for _, module := range modules {
+		module.RegisterRoutes(router)
+	}
+}
+
+func GetAllModels(modules ...Module) []interface{} {
+	var models []interface{}
+	for _, module := range modules {
+		models = append(models, module.GetModels()...)
+	}
+	return models
+}
+
+type Setup func(db *gorm.DB) Module
+
+func SetupAllModules(db *gorm.DB, moduleSetups ...Setup) []Module {
+	modules := make([]Module, len(moduleSetups))
+	for i, setup := range moduleSetups {
+		modules[i] = setup(db)
+	}
+	return modules
+}
