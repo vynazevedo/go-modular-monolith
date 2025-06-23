@@ -58,7 +58,6 @@ PORT=8080
 DATABASE_URL=root:password@tcp(localhost:3306)/modular_monolith
 ```
 
-
 ## Adding New Modules
 
 1. Create module directory structure:
