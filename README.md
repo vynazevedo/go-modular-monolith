@@ -85,7 +85,7 @@ PORT=8080
 DATABASE_URL=root:password@tcp(localhost:3306)/modular_monolith
 ```
 
-## 🏛️ Key Design Patterns
+## Key Design Patterns
 
 ### Module Interface
 ```go
