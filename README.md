@@ -2,7 +2,7 @@
 
 A production-ready Go application template following modular monolith architecture principles with Clean Architecture patterns. Built with Fiber web framework, GORM ORM, and MySQL database.
 
-## 🏗️ Architecture
+## Architecture
 
 ### Modular Structure
 Each business domain is organized as a self-contained module with clear separation of concerns:
@@ -22,7 +22,7 @@ internal/modules/{domain}/
 - **HTTP**: Common HTTP utilities and health checks
 - **Module**: Core module interface and registration system
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Go 1.24+
@@ -76,7 +76,7 @@ internal/modules/{domain}/
 - `PUT /api/v1/users/:id/deactivate` - Deactivate user
 - `GET /api/v1/users` - List users (with pagination)
 
-## 🔧 Configuration
+## Configuration
 
 Configure via environment variables or `.env` file:
 
@@ -106,7 +106,7 @@ type Module interface {
 - Repository pattern for data access
 - GORM with MySQL driver
 
-## 📦 Adding New Modules
+## Adding New Modules
 
 1. Create module directory structure:
    ```bash
@@ -123,7 +123,7 @@ type Module interface {
    modules := module.SetupAllModules(db, userModuleSetup, productModuleSetup)
    ```
 
-## 🔍 Testing
+## Testing
 
 ```bash
 # Run all tests
@@ -136,7 +136,7 @@ make test-coverage
 go test ./internal/modules/user/...
 ```
 
-## 🐳 Docker
+## Docker
 
 - **Application**: Multi-stage build with Alpine final image
 - **Database**: MySQL 8.0 with health checks
