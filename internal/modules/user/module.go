@@ -35,8 +35,8 @@ func (m *Module) QueryService() domain.UserQueryService {
 	return m.service
 }
 
-func (m *Module) GetModels() []interface{} {
-	return []interface{}{
+func (m *Module) GetModels() []any {
+	return []any{
 		&infra.UserModel{},
 	}
 }

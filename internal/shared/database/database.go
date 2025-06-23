@@ -1,3 +1,4 @@
+// Package database provides functions to connect to the database and perform migrations
 package database
 
 import (
@@ -26,6 +27,6 @@ func ConnectWithEnv() (*gorm.DB, error) {
 	return Connect(cfg)
 }
 
-func AutoMigrate(db *gorm.DB, models ...interface{}) error {
+func AutoMigrate(db *gorm.DB, models ...any) error {
 	return db.AutoMigrate(models...)
 }

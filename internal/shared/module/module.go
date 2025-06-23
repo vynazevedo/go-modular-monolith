@@ -1,3 +1,4 @@
+// Package module provides an interface and utility functions for managing application modules in a modular monolith architecture
 package module
 
 import (
@@ -7,7 +8,7 @@ import (
 
 type Module interface {
 	RegisterRoutes(router fiber.Router)
-	GetModels() []interface{}
+	GetModels() []any
 }
 
 func RegisterModules(router fiber.Router, modules ...Module) {
@@ -16,8 +17,8 @@ func RegisterModules(router fiber.Router, modules ...Module) {
 	}
 }
 
-func GetAllModels(modules ...Module) []interface{} {
-	var models []interface{}
+func GetAllModels(modules ...Module) []any {
+	var models []any
 	for _, module := range modules {
 		models = append(models, module.GetModels()...)
 	}

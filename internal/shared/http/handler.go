@@ -1,3 +1,4 @@
+// Package http provides shared HTTP handlers for the applications
 package http
 
 import (
