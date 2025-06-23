@@ -469,7 +469,7 @@ func TestListUsers(t *testing.T) {
 		repo := NewMockUserRepository()
 		service := NewUserService(repo)
 
-		for i := 0; i < 15; i++ {
+		for i := range 15 {
 			user, _ := domain.NewUser(
 				fmt.Sprintf("user%d@example.com", i),
 				fmt.Sprintf("User %d", i),

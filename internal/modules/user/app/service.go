@@ -1,3 +1,4 @@
+// Package app provides the application layer for user management, handling commands and queries.
 package app
 
 import (

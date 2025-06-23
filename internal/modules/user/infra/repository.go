@@ -1,3 +1,4 @@
+// Package infra provides the GORM implementation of the user repository.
 package infra
 
 import (
@@ -11,7 +12,7 @@ import (
 
 type UserModel struct {
 	ID        string `gorm:"primaryKey"`
-	Email     string `gorm:"uniqueIndex"`
+	Email     string `gorm:"size:255;uniqueIndex"`
 	Name      string
 	Status    string
 	CreatedAt int64

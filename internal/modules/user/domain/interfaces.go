@@ -1,3 +1,4 @@
+// Package domain provides the interfaces for user-related operations.
 package domain
 
 import (

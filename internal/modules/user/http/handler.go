@@ -1,3 +1,4 @@
+// Package http provides HTTP handlers for the user module
 package http
 
 import (
