@@ -1,11 +1,6 @@
 # Go Modular Monolith
 
-A production-ready Go application template following modular monolith architecture principles with Clean Architecture patterns. Built with Fiber web framework, GORM ORM, and MySQL database.
-
-## 🏗️ Architecture
-
-### Modular Structure
-Each business domain is organized as a self-contained module with clear separation of concerns:
+## Architecture
 
 ```
 internal/modules/{domain}/
@@ -15,14 +10,6 @@ internal/modules/{domain}/
 ├── infra/      # Infrastructure implementations (repositories)
 └── module.go   # Module registration and dependency wiring
 ```
-
-### Shared Components
-- **Config**: Centralized configuration management with Viper
-- **Database**: GORM connection management and utilities
-- **HTTP**: Common HTTP utilities and health checks
-- **Module**: Core module interface and registration system
-
-## 🚀 Quick Start
 
 ### Prerequisites
 - Go 1.24+
@@ -62,21 +49,7 @@ internal/modules/{domain}/
 | `make lint` | Run Go linting and formatting |
 | `make clean` | Remove build artifacts |
 
-## 📡 API Endpoints
-
-### Health Check
-- `GET /health-check/alive` - Application health status
-
-### User Management
-- `POST /api/v1/users` - Create user
-- `GET /api/v1/users/:id` - Get user by ID
-- `PUT /api/v1/users/:id` - Update user
-- `DELETE /api/v1/users/:id` - Delete user
-- `PUT /api/v1/users/:id/activate` - Activate user
-- `PUT /api/v1/users/:id/deactivate` - Deactivate user
-- `GET /api/v1/users` - List users (with pagination)
-
-## 🔧 Configuration
+## Configuration
 
 Configure via environment variables or `.env` file:
 
@@ -85,28 +58,8 @@ PORT=8080
 DATABASE_URL=root:password@tcp(localhost:3306)/modular_monolith
 ```
 
-## 🏛️ Key Design Patterns
 
-### Module Interface
-```go
-type Module interface {
-    RegisterRoutes(router fiber.Router)
-    GetModels() []any
-}
-```
-
-### Clean Architecture Layers
-1. **Domain**: Pure business logic, no external dependencies
-2. **Application**: Use cases and business workflows
-3. **Infrastructure**: External concerns (database, HTTP)
-4. **HTTP**: Web layer (handlers, DTOs, routing)
-
-### Database Management
-- Auto-migration on startup
-- Repository pattern for data access
-- GORM with MySQL driver
-
-## 📦 Adding New Modules
+## Adding New Modules
 
 1. Create module directory structure:
    ```bash
@@ -123,7 +76,7 @@ type Module interface {
    modules := module.SetupAllModules(db, userModuleSetup, productModuleSetup)
    ```
 
-## 🔍 Testing
+## Testing
 
 ```bash
 # Run all tests
@@ -135,36 +88,3 @@ make test-coverage
 # Run specific module tests
 go test ./internal/modules/user/...
 ```
-
-## 🐳 Docker
-
-- **Application**: Multi-stage build with Alpine final image
-- **Database**: MySQL 8.0 with health checks
-- **Compose**: Orchestrates app and database with proper dependencies for development
-
-## 📋 Development Guidelines
-
-### Code Organization
-- Follow Clean Architecture principles
-- Keep modules independent and self-contained
-- Use dependency injection at module boundaries
-- Implement proper error handling and logging
-
-### Database
-- Use GORM struct tags for schema definition
-- Implement repository interfaces in domain layer
-- Handle migrations automatically via AutoMigrate
-
-### HTTP Layer
-- Use DTOs for request/response serialization
-- Implement proper error handling middleware
-- Follow RESTful conventions
-
-## 🛠️ Tech Stack
-
-- **Framework**: Fiber v2 (Express-like Go web framework)
-- **ORM**: GORM (Go Object-Relational Mapping)
-- **Database**: MySQL 8.0
-- **Config**: Viper (configuration management)
-- **Testing**: Go standard testing package
-- **Containerization**: Docker & Docker Compose
