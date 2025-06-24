@@ -1,0 +1,25 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+cmd = "make build"
+bin = "./bin/main"
+include_ext = ["go", "tpl", "tmpl", "html"]
+exclude_dir = [
+    "assets",
+    "docs",
+    "tmp",
+    "vendor",
+    "frontend",
+    "node_modules",
+    ".git"
+]
+
+[log]
+time = true
+
+[color]
+main = "yellow"
+watcher = "cyan"
+build = "green"
+runner = "magenta"

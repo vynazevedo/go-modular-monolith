@@ -26,6 +26,7 @@ type DatabaseConfig struct {
 	User     string
 	Password string
 	Name     string
+	Migrate  bool
 }
 
 func LoadConfig() (*Config, error) {
@@ -40,6 +41,7 @@ func LoadConfig() (*Config, error) {
 	viper.SetDefault("DB_USER", "root")
 	viper.SetDefault("DB_PASSWORD", "password")
 	viper.SetDefault("DB_NAME", "modular_monolith")
+	viper.SetDefault("DB_AUTO_MIGRATE", false)
 	viper.SetDefault("LOG_LEVEL", "info")
 	viper.SetDefault("LOG_FORMAT", "text")
 
@@ -62,6 +64,7 @@ func LoadConfig() (*Config, error) {
 			User:     viper.GetString("DB_USER"),
 			Password: viper.GetString("DB_PASSWORD"),
 			Name:     viper.GetString("DB_NAME"),
+			Migrate:  viper.GetBool("DB_AUTO_MIGRATE"),
 		},
 		Logger: logger.Config{
 			Level:  viper.GetString("LOG_LEVEL"),

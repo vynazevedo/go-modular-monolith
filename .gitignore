@@ -6,3 +6,4 @@ src/main.exe
 
 # Ignore build artifacts
 bin/
+tmp/

@@ -1,7 +1,18 @@
 # Go Modular Monolith Makefile
 
+ifeq ($(OS),Windows_NT)
+    BINARY_EXT := .exe
+    RM_CMD := del /Q
+    MKDIR_CMD := mkdir
+else
+    BINARY_EXT :=
+    RM_CMD := rm -f
+    MKDIR_CMD := mkdir -p
+endif
+
 APP_NAME=modular-monolith
 MAIN_PATH=cmd/api/main.go
+BINARY_NAME := main$(BINARY_EXT)
 BUILD_DIR=bin
 
 .PHONY: help dev-local dev db-up build build-windows build-linux build-all clean test test-verbose test-coverage lint deps down docker-logs migrate-up migrate-down migrate-status migrate-force migrate-create
@@ -21,7 +32,7 @@ db-up: ## Inicia apenas o container do banco de dados
 
 build: ## Compila o binário da aplicação para o sistema atual
 	@mkdir -p $(BUILD_DIR)
-	go build -o $(BUILD_DIR)/$(APP_NAME) $(MAIN_PATH)
+	go build -o $(BUILD_DIR)/$(BINARY_PATH) $(MAIN_PATH)
 	@echo "Aplicação compilada com sucesso: $(BUILD_DIR)/$(APP_NAME)"
 
 build-windows: ## Compila o binário para Windows (amd64)
