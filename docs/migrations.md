@@ -77,4 +77,4 @@ go run cmd/migrate/main.go -action=status
 go run cmd/migrate/main.go -action=force -version=1
 ```
 
-**Lembre-se**: Migrações são irreversíveis em produção. Sempre teste tudo localmente primeiro! 🚀
+**Lembre-se**: Migrações são irreversíveis em produção. Sempre teste tudo localmente primeiro!
