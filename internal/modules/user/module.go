@@ -35,10 +35,5 @@ func (m *Module) QueryService() domain.UserQueryService {
 	return m.service
 }
 
-func (m *Module) GetModels() []any {
-	return []any{
-		&infra.UserModel{},
-	}
-}
 
 var _ module.Module = (*Module)(nil)

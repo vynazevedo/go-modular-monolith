@@ -4,7 +4,7 @@ APP_NAME=modular-monolith
 MAIN_PATH=cmd/api/main.go
 BUILD_DIR=bin
 
-.PHONY: help dev-local dev db-up build build-windows build-linux build-all clean test test-verbose test-coverage lint deps down docker-logs
+.PHONY: help dev-local dev db-up build build-windows build-linux build-all clean test test-verbose test-coverage lint deps down docker-logs migrate-up migrate-down migrate-status migrate-force migrate-create
 
 help: ## Mostra esta mensagem de ajuda
 	@echo "Comandos disponíveis:"
@@ -68,3 +68,41 @@ down: ## Para e remove containers Docker
 
 docker-logs: ## Mostra logs dos containers Docker
 	docker compose logs -f
+
+migrate-up: ## Executa todas as migrações pendentes
+	go run cmd/migrate/main.go -action=up
+	@echo "Migrações executadas!"
+
+migrate-down: ## Desfaz a última migração
+	go run cmd/migrate/main.go -action=down
+	@echo "Migração desfeita!"
+
+migrate-status: ## Mostra o status atual das migrações
+	go run cmd/migrate/main.go -action=status
+
+migrate-force: ## Força uma versão específica (uso: make migrate-force VERSION=1)
+	@if [ -z "$(VERSION)" ]; then \
+		echo "Erro: VERSION é obrigatório. Uso: make migrate-force VERSION=1"; \
+		exit 1; \
+	fi
+	go run cmd/migrate/main.go -action=force -version=$(VERSION)
+	@echo "Versão $(VERSION) forçada!"
+
+migrate-create: ## Cria uma nova migração (uso: make migrate-create NAME=create_products_table)
+	@if [ -z "$(NAME)" ]; then \
+		echo "Erro: NAME é obrigatório. Uso: make migrate-create NAME=create_products_table"; \
+		exit 1; \
+	fi
+	@TIMESTAMP=$$(date +%s); \
+	PADDED_TIMESTAMP=$$(printf "%06d" $$TIMESTAMP); \
+	UP_FILE="migrations/$${PADDED_TIMESTAMP}_$(NAME).up.sql"; \
+	DOWN_FILE="migrations/$${PADDED_TIMESTAMP}_$(NAME).down.sql"; \
+	echo "-- Migração: $(NAME)" > $$UP_FILE; \
+	echo "-- TODO: Adicionar comandos SQL aqui" >> $$UP_FILE; \
+	echo "" >> $$UP_FILE; \
+	echo "-- Rollback: $(NAME)" > $$DOWN_FILE; \
+	echo "-- TODO: Adicionar comandos de rollback aqui" >> $$DOWN_FILE; \
+	echo "" >> $$DOWN_FILE; \
+	echo "Migração criada:"; \
+	echo "  $$UP_FILE"; \
+	echo "  $$DOWN_FILE"

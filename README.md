@@ -95,6 +95,7 @@ make build-all        # Todas as plataformas
 
 ## Comandos úteis
 
+### Desenvolvimento
 | Comando | O que faz |
 |---------|-----------|
 | `make help` | Lista todos os comandos disponíveis |
@@ -103,6 +104,16 @@ make build-all        # Todas as plataformas
 | `make test` | Executa todos os testes |
 | `make test-coverage` | Gera relatório de cobertura |
 | `make lint` | Formatação e análise de código |
+
+### Migrações de Banco
+| Comando | O que faz |
+|---------|-----------|
+| `make migrate-up` | Executa migrações pendentes |
+| `make migrate-down` | Desfaz última migração |
+| `make migrate-status` | Status das migrações |
+| `make migrate-create NAME=exemplo` | Cria nova migração |
+
+Veja `docs/migrations.md` para guia completo de migrações.
 
 ## Como adicionar um novo módulo
 

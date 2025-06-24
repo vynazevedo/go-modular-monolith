@@ -31,15 +31,16 @@ func main() {
 	}
 	logger.Info("Database connected successfully")
 
+	// Executar migrações
+	if err := database.RunMigrations(cfg, "migrations"); err != nil {
+		logger.Fatalf("Failed to run migrations: %v", err)
+	}
+	logger.Info("Database migrations completed successfully")
+
 	userModuleSetup := func(db *gorm.DB) module.Module {
 		return user.NewModule(db)
 	}
 	modules := module.SetupAllModules(db, userModuleSetup)
-
-	if err := database.AutoMigrate(db, module.GetAllModels(modules...)...); err != nil {
-		logger.Fatalf("Failed to auto migrate models: %v", err)
-	}
-	logger.Info("Database migration completed successfully")
 
 	router := gin.Default()
 

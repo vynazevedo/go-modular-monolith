@@ -8,7 +8,6 @@ import (
 
 type Module interface {
 	RegisterRoutes(router *gin.RouterGroup)
-	GetModels() []any
 }
 
 func RegisterModules(router *gin.RouterGroup, modules ...Module) {
@@ -17,13 +16,6 @@ func RegisterModules(router *gin.RouterGroup, modules ...Module) {
 	}
 }
 
-func GetAllModels(modules ...Module) []any {
-	var models []any
-	for _, module := range modules {
-		models = append(models, module.GetModels()...)
-	}
-	return models
-}
 
 type Setup func(db *gorm.DB) Module
 
