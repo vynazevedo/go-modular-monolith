@@ -16,7 +16,7 @@ func (h *Handler) RegisterRoutes(router gin.IRouter) {
 	router.GET("/health-check/alive", HealthCheckHandler)
 }
 
-// HealthCheckHandler rota para verificar a saúde do serviço.
+// HealthCheckHandler rota para verificar a saúde do serviço
 func HealthCheckHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status": "UP",
