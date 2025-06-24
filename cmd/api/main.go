@@ -8,6 +8,7 @@ import (
 	"github.com/vynazevedo/go-modular-monolith/internal/shared/config"
 	"github.com/vynazevedo/go-modular-monolith/internal/shared/database"
 	httpHandler "github.com/vynazevedo/go-modular-monolith/internal/shared/http"
+	"github.com/vynazevedo/go-modular-monolith/internal/shared/middleware"
 	"github.com/vynazevedo/go-modular-monolith/internal/shared/module"
 	"github.com/vynazevedo/go-modular-monolith/pkg/logger"
 	"gorm.io/gorm"
@@ -47,6 +48,7 @@ func main() {
 
 	router.Use(gin.Recovery())
 	router.Use(gin.Logger())
+	router.Use(middleware.CORS(cfg))
 
 	healthHandler := httpHandler.NewHandler()
 	healthHandler.RegisterRoutes(router)

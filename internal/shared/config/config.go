@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/spf13/viper"
 	"github.com/vynazevedo/go-modular-monolith/pkg/logger"
@@ -13,6 +14,7 @@ type Config struct {
 	Server   ServerConfig
 	Database DatabaseConfig
 	Logger   logger.Config
+	CORS     CORSConfig
 }
 
 type ServerConfig struct {
@@ -27,6 +29,13 @@ type DatabaseConfig struct {
 	Password string
 	Name     string
 	Migrate  bool
+}
+
+type CORSConfig struct {
+	AllowedOrigins []string
+	AllowedMethods []string
+	AllowedHeaders []string
+	MaxAge         int
 }
 
 func LoadConfig() (*Config, error) {
@@ -44,6 +53,10 @@ func LoadConfig() (*Config, error) {
 	viper.SetDefault("DB_AUTO_MIGRATE", false)
 	viper.SetDefault("LOG_LEVEL", "info")
 	viper.SetDefault("LOG_FORMAT", "text")
+	viper.SetDefault("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:5173")
+	viper.SetDefault("CORS_ALLOWED_METHODS", "GET,POST,PUT,DELETE,OPTIONS")
+	viper.SetDefault("CORS_ALLOWED_HEADERS", "Origin,Content-Type,Accept,Authorization,X-API-Key")
+	viper.SetDefault("CORS_MAX_AGE", 86400)
 
 	if err := viper.ReadInConfig(); err != nil {
 		var configFileNotFoundError viper.ConfigFileNotFoundError
@@ -69,6 +82,12 @@ func LoadConfig() (*Config, error) {
 		Logger: logger.Config{
 			Level:  viper.GetString("LOG_LEVEL"),
 			Format: viper.GetString("LOG_FORMAT"),
+		},
+		CORS: CORSConfig{
+			AllowedOrigins: strings.Split(viper.GetString("CORS_ALLOWED_ORIGINS"), ","),
+			AllowedMethods: strings.Split(viper.GetString("CORS_ALLOWED_METHODS"), ","),
+			AllowedHeaders: strings.Split(viper.GetString("CORS_ALLOWED_HEADERS"), ","),
+			MaxAge:         viper.GetInt("CORS_MAX_AGE"),
 		},
 	}
 

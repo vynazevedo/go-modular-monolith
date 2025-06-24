@@ -79,6 +79,12 @@ DB_NAME=modular_monolith
 # Logging
 LOG_LEVEL=info
 LOG_FORMAT=text
+
+# CORS (para frontend React)
+CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
+CORS_ALLOWED_METHODS=GET,POST,PUT,DELETE,OPTIONS
+CORS_ALLOWED_HEADERS=Origin,Content-Type,Accept,Authorization,X-API-Key
+CORS_MAX_AGE=86400
 ```
 
 ## Build para produção
