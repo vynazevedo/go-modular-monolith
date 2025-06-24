@@ -1,13 +1,25 @@
 package http
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/vynazevedo/go-modular-monolith/internal/shared/middleware"
+)
 
 func (h *UserHandlers) RegisterRoutes(router *gin.RouterGroup) {
-	router.POST("/", h.CreateUser)
-	router.GET("/:id", h.GetUser)
-	router.PUT("/:id", h.UpdateUser)
-	router.DELETE("/:id", h.DeleteUser)
-	router.PUT("/:id/activate", h.ActivateUser)
-	router.PUT("/:id/deactivate", h.DeactivateUser)
-	router.GET("/", h.ListUsers)
+	// Rotas protegidas
+	protected := router.Group("/", middleware.ValidateAPIKey())
+	{
+		protected.POST("/", h.CreateUser)
+		protected.PUT("/:id", h.UpdateUser)
+		protected.DELETE("/:id", h.DeleteUser)
+		protected.PUT("/:id/activate", h.ActivateUser)
+		protected.PUT("/:id/deactivate", h.DeactivateUser)
+	}
+
+	// Rotas públicas (apenas leitura)
+	public := router.Group("/", middleware.OptionalAPIKey())
+	{
+		public.GET("/:id", h.GetUser)
+		public.GET("/", h.ListUsers)
+	}
 }

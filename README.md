@@ -37,6 +37,7 @@ Cada módulo é completamente isolado e só se comunica através de interfaces b
 - **ORM**: GORM com MySQL
 - **Logging**: Logrus estruturado
 - **Config**: Viper com variáveis de ambiente
+- **Middlewares**: Exemplos de autenticação e validação
 - **Testes**: Go testing nativo
 - **Build**: Makefile com cross-compilation
 
@@ -133,6 +134,20 @@ make test-coverage
 go test ./internal/modules/user/...
 ```
 
+## Middleware de exemplo
+
+O projeto inclui um middleware de validação de API Key como exemplo:
+
+```bash
+# Requisição protegida (precisa do header)
+curl -X POST http://localhost:8080/api/v1/users \
+  -H "X-API-Key: api-key-exemplo" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Vinicius", "email": "vinicius@teste.com"}'
+
+# Requisição pública (header opcional)  
+curl http://localhost:8080/api/v1/users
+```
 ---
 
 **Dica**: Este template foi pensado para crescer com seu projeto. Comece simples e evolua conforme a necessidade.
