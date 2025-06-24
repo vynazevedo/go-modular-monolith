@@ -1,4 +1,4 @@
-![Go](https://img.shields.io/badge/Go-1.24-00ADD8?logo=go&logoColor=white)
+![Go](https://img.shields.io/badge/Go-1.24.4-00ADD8?logo=go&logoColor=white)
 ![Gin](https://img.shields.io/badge/Gin-Framework-00ADD8?logo=go&logoColor=white)
 ![GORM](https://img.shields.io/badge/GORM-ORM-blue)
 ![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)
