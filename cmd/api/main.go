@@ -44,7 +44,7 @@ func main() {
 	}
 	modules := module.SetupAllModules(db, userModuleSetup)
 
-	router := gin.Default()
+	router := gin.New()
 
 	router.Use(gin.Recovery())
 	router.Use(gin.Logger())

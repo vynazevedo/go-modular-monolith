@@ -53,6 +53,7 @@ func LoadConfig() (*Config, error) {
 	viper.SetDefault("DB_AUTO_MIGRATE", false)
 	viper.SetDefault("LOG_LEVEL", "info")
 	viper.SetDefault("LOG_FORMAT", "text")
+	viper.SetDefault("SERVICE_NAME", "go-modular-monolith")
 	viper.SetDefault("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:5173")
 	viper.SetDefault("CORS_ALLOWED_METHODS", "GET,POST,PUT,DELETE,OPTIONS")
 	viper.SetDefault("CORS_ALLOWED_HEADERS", "Origin,Content-Type,Accept,Authorization,X-API-Key")
@@ -80,8 +81,9 @@ func LoadConfig() (*Config, error) {
 			Migrate:  viper.GetBool("DB_AUTO_MIGRATE"),
 		},
 		Logger: logger.Config{
-			Level:  viper.GetString("LOG_LEVEL"),
-			Format: viper.GetString("LOG_FORMAT"),
+			Level:       viper.GetString("LOG_LEVEL"),
+			Format:      viper.GetString("LOG_FORMAT"),
+			ServiceName: viper.GetString("SERVICE_NAME"),
 		},
 		CORS: CORSConfig{
 			AllowedOrigins: strings.Split(viper.GetString("CORS_ALLOWED_ORIGINS"), ","),

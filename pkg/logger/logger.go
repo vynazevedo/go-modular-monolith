@@ -1,47 +1,117 @@
 package logger
 
 import (
+	"context"
 	"os"
+	"time"
 
 	"github.com/sirupsen/logrus"
 )
 
-var Log *logrus.Logger
+var Log *StructuredLogger
 
 type Config struct {
-	Level  string `json:"level" mapstructure:"level"`
-	Format string `json:"format" mapstructure:"format"`
+	Level       string `json:"level" mapstructure:"level"`
+	Format      string `json:"format" mapstructure:"format"`
+	ServiceName string `json:"service_name" mapstructure:"service_name"`
+}
+
+type StructuredLogger struct {
+	*logrus.Logger
+	ServiceName string
+}
+
+type CustomJSONFormatter struct {
+	ServiceName string
+}
+
+func (f *CustomJSONFormatter) Format(entry *logrus.Entry) ([]byte, error) {
+	data := make(logrus.Fields)
+	for k, v := range entry.Data {
+		data[k] = v
+	}
+
+	data["global_event_timestamp"] = entry.Time.UTC().Format(time.RFC3339)
+	data["level"] = entry.Level.String()
+	data["message"] = entry.Message
+	data["service_name"] = f.ServiceName
+
+	formatter := &logrus.JSONFormatter{}
+	return formatter.Format(&logrus.Entry{
+		Logger:  entry.Logger,
+		Data:    data,
+		Time:    entry.Time,
+		Level:   entry.Level,
+		Message: "",
+	})
+}
+
+func getServiceName(serviceName string) string {
+	if serviceName == "" {
+		return "go-modular-monolith"
+	}
+	return serviceName
 }
 
 func Init(config Config) {
-	Log = logrus.New()
+	logger := logrus.New()
 
 	level, err := logrus.ParseLevel(config.Level)
 	if err != nil {
 		level = logrus.InfoLevel
 	}
-	Log.SetLevel(level)
+	logger.SetLevel(level)
 
-	Log.SetOutput(os.Stdout)
+	logger.SetOutput(os.Stdout)
 
 	switch config.Format {
 	case "json":
-		Log.SetFormatter(&logrus.JSONFormatter{
-			TimestampFormat: "2006-01-02 15:04:05",
+		logger.SetFormatter(&CustomJSONFormatter{
+			ServiceName: getServiceName(config.ServiceName),
 		})
 	default:
-		Log.SetFormatter(&logrus.TextFormatter{
+		logger.SetFormatter(&logrus.TextFormatter{
 			FullTimestamp:   true,
-			TimestampFormat: "2006-01-02 15:04:05",
+			TimestampFormat: time.RFC3339,
 		})
+	}
+
+	Log = &StructuredLogger{
+		Logger:      logger,
+		ServiceName: getServiceName(config.ServiceName),
 	}
 }
 
-func GetLogger() *logrus.Logger {
+func (sl *StructuredLogger) WithContext(ctx context.Context) *logrus.Entry {
+	entry := sl.Logger.WithContext(ctx)
+
+	if traceID := ctx.Value("trace_id"); traceID != nil {
+		entry = entry.WithField("trace_id", traceID)
+	}
+	if sessionID := ctx.Value("session_id"); sessionID != nil {
+		entry = entry.WithField("session_id", sessionID)
+	}
+
+	return entry
+}
+
+func (sl *StructuredLogger) WithEventName(eventName string) *logrus.Entry {
+	return sl.Logger.WithField("global_event_name", eventName)
+}
+
+func (sl *StructuredLogger) WithContextFields(fields logrus.Fields) *logrus.Entry {
+	if len(fields) > 0 {
+		return sl.Logger.WithField("context", fields)
+	}
+	return sl.Logger.WithFields(logrus.Fields{})
+}
+
+func GetLogger() *StructuredLogger {
 	if Log == nil {
 		Init(Config{
-			Level:  "info",
-			Format: "text",
+			Level:       "info",
+			Format:      "text",
+			ServiceName: "go-modular-monolith",
 		})
 	}
 	return Log
@@ -93,4 +163,16 @@ func WithField(key string, value interface{}) *logrus.Entry {
 
 func WithFields(fields logrus.Fields) *logrus.Entry {
 	return GetLogger().WithFields(fields)
+}
+
+func WithContext(ctx context.Context) *logrus.Entry {
+	return GetLogger().WithContext(ctx)
+}
+
+func WithEventName(eventName string) *logrus.Entry {
+	return GetLogger().WithEventName(eventName)
+}
+
+func WithContextFields(fields logrus.Fields) *logrus.Entry {
+	return GetLogger().WithContextFields(fields)
 }
